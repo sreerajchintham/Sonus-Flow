@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import streamlit as st
 from gtts import gTTS
 import time
+from pydub import AudioSegment
 def get_novel(url):
     headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
@@ -19,6 +20,7 @@ def get_novel(url):
     except:
           return "Invalid URL"
 
+
 def generate_audio(text,lang):
     if text == "Invalid URL" or f"Can not retrieve the URL : Response Status Code" in text:
          return 
@@ -26,7 +28,9 @@ def generate_audio(text,lang):
     audio_path = "output.mp3"
     tts.save(audio_path)
     return audio_path
-
+def change_format(audio_path):
+    mp3_audio = AudioSegment.from_file(audio_path, format="mp3")
+    mp3_audio.export("output.wav", format="wav")
 
 st.title("Chapter Audio Generator")
 chap_url = st.text_input("Enter your chapter url:")
@@ -36,9 +40,12 @@ if st.button("Generate Audio file"):
     if chap_url:
         text = get_novel(chap_url)
         audio_path = generate_audio(text,lang=language)
+        change_format(audio_path)
+        with open("output.wav", "rb") as f:
+            audio_bytes = f.read()
+            st.audio(audio_bytes, format="audio/wav")
         with open(audio_path, "rb") as audio_file:
-                    st.audio(audio_path, format="audio/mp3")
-                    st.download_button(label="Download Audio", data=audio_file, file_name="output.mp3", mime="audio/mp3")
+                    st.download_button(label="Download Audio", data=audio_file, file_name="output.wav", mime="audio/mp3")
 
         st.write("Audio Generated Successfully!!!")
     else:
