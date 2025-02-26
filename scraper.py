@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup 
 import streamlit as st
 from gtts import gTTS
+import time
 def get_novel(url):
     headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
@@ -30,6 +31,7 @@ def generate_audio(text,lang):
 st.title("Chapter Audio Generator")
 chap_url = st.text_input("Enter your chapter url:")
 language = st.selectbox("Select Language", ["en", "es", "fr", "de"])
+start_time = time.time()
 if st.button("Generate Audio file"):
     if chap_url:
         text = get_novel(chap_url)
@@ -41,3 +43,6 @@ if st.button("Generate Audio file"):
         st.write("Audio Generated Successfully!!!")
     else:
         st.error("Enter a Valid URL")
+
+stop_time = time.time()
+st.write(f"Total Time Taken - {int((stop_time-start_time)//60)} minutes and {int((stop_time-start_time)%60)} seconds")
