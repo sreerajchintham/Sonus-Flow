@@ -3,3 +3,4 @@ streamlit
 gtts
 bs4
 pydub
+ffmpeg-python
