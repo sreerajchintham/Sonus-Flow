@@ -18,20 +18,26 @@ def get_novel(url):
     except:
           return "Invalid URL"
 
+def generate_audio(text,lang):
+    if text == "Invalid URL" or f"Can not retrieve the URL : Response Status Code" in text:
+         return 
+    tts = gTTS(text=text,lang=lang,slow=False)
+    audio_path = "output.mp3"
+    tts.save(audio_path)
+    return audio_path
+
+
 st.title("Chapter Audio Generator")
 chap_url = st.text_input("Enter your chapter url:")
 language = st.selectbox("Select Language", ["en", "es", "fr", "de"])
 if st.button("Generate Audio file"):
     if chap_url:
-        text_ip = get_novel(chap_url)
-        tts = gTTS(text=text_ip,lang=language,slow=False)
-        audio_path = "output.mp3"
-        
-        tts.save(audio_path)
+        text = get_novel(chap_url)
+        audio_path = generate_audio(text,lang=language)
         with open(audio_path, "rb") as audio_file:
                     st.audio(audio_path, format="audio/mp3")
                     st.download_button(label="Download Audio", data=audio_file, file_name="output.mp3", mime="audio/mp3")
-    
+
         st.write("Audio Generated Successfully!!!")
     else:
         st.error("Enter a Valid URL")
