@@ -36,13 +36,14 @@ def change_format(audio_path):
     mp3_audio.export("output.wav", format="wav")
 
 st.title("Sonus Flow")
-chap_url = st.text_input("Enter your chapter url:")
-language = st.selectbox("Select Language", ["en", "es", "fr", "de"])
+chap_url = st.text_input("Enter your chapter URL:")
+language = st.selectbox("Select the Language ", ["en", "es", "fr", "de"])
 start_time = time.time()
 if st.button("Generate Audio file"):
     if chap_url:
         text = get_novel(chap_url)
-        st.link_button(next_page)
+        print(next_page)
+        st.link_button("Next Chapter", next_page)
         audio_path = generate_audio(text,lang=language)
         change_format(audio_path)
         with open("output.wav", "rb") as f:
