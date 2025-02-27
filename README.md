@@ -4,7 +4,7 @@
 Sonus Flow is a Web Application built using Streamlit and deployed via Streamlit Community Cloud.
 
 ### **What is Sonus Flow?**  
-Sonus Flow is a personal project designed to convert light novel chapters into audio files seamlessly. It allows users to take any chapter from (Novel Bin)[https://novelbin.com/] and generate an audio file for listening.  
+Sonus Flow is a personal project designed to convert light novel chapters into audio files seamlessly. It allows users to take any chapter from [Novel Bin](https://novelbin.com/) and generate an audio file for listening.  
 
 ### **Features:**  
 - Scrapes and retrieves novel content using **requests** and **BeautifulSoup**.  
