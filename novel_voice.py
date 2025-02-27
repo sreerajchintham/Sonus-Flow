@@ -43,7 +43,8 @@ if st.button("Generate Audio file"):
     if chap_url:
         text = get_novel(chap_url)
         print(next_page)
-        st.link_button("Next Chapter", next_page)
+        if next_page:
+            st.link_button("Next Chapter", next_page)
         audio_path = generate_audio(text,lang=language)
         change_format(audio_path)
         with open("output.wav", "rb") as f:
