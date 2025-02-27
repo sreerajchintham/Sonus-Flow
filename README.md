@@ -22,10 +22,11 @@ Sonus Flow is a personal project designed to convert light novel chapters into a
 ### **Installation & Usage**  
 
 To install and run it locally:  
-```sh
+``` sh
 git clone https://github.com/your-repo/sonus-flow.git  
 cd sonus-flow  
 pip install -r requirements.txt  
-streamlit run app.py  
+streamlit run app.py 
+```
 
 

@@ -13,4 +13,4 @@ Sonus Flow is a personal project designed to:
 - Be a simple and effective alternative to paid tools like Speechify.  
 
 This is just the first version, and I plan to update it based on my needs and improvements. If you're interested, feel free to check it out!  
-(Sonus Flow)[https://sonus-flow-btyqk5uzaxjkwowbzrmp9h.streamlit.app/]
+[Sonus Flow](https://sonus-flow-btyqk5uzaxjkwowbzrmp9h.streamlit.app/)
