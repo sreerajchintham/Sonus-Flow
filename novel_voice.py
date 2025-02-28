@@ -33,29 +33,34 @@ def generate_audio(text,lang):
     return audio_path
 def change_format(audio_path):
     mp3_audio = AudioSegment.from_file(audio_path, format="mp3")
-    mp3_audio.export("output.wav", format="wav")
-
+    wav_audio_path = "output.wav"
+    mp3_audio.export(wav_audio_path, format="wav")
+    return wav_audio_path
 st.title("Sonus Flow")
 chap_url = st.text_input("Enter your chapter URL:")
 language = st.selectbox("Select the Language ", ["en", "es", "fr", "de"])
 start_time = time.time()
 if st.button("Generate Audio file"):
-    if chap_url:
-        text = get_novel(chap_url)
-        print(next_page)
-        if next_page:
-            st.link_button("Next Chapter", next_page)
-        audio_path = generate_audio(text,lang=language)
-        change_format(audio_path)
-        with open("output.wav", "rb") as f:
-            audio_bytes = f.read()
-            st.audio(audio_bytes, format="audio/wav")
-        with open(audio_path, "rb") as audio_file:
-                    st.download_button(label="Download Audio", data=audio_file, file_name="output.wav", mime="audio/mp3")
-
-        st.write("Audio Generated Successfully!!!")
-    else:
-        st.error("Enter a Valid URL")
+    try:
+        if chap_url:
+            text = get_novel(chap_url)
+            print(next_page)
+            audio_path = generate_audio(text,lang=language)
+            wav_audio_path = change_format(audio_path)
+            with open(wav_audio_path, "rb") as f:
+                audio_bytes = f.read()
+                st.audio(audio_bytes, format="audio/wav")
+            with open(audio_path, "rb") as audio_file:
+                        st.download_button(label="Download Audio", data=audio_file, file_name="output.wav", mime="audio/mp3")
+    
+            st.write("Audio Generated Successfully!!!")
+        
+            if next_page:
+                st.link_button("Next Chapter", next_page)
+        else:
+            st.error("Enter a Valid URL")
+    except:
+        st.write("Audio could not be generated")
 
 stop_time = time.time()
 
