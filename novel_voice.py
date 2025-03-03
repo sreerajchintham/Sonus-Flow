@@ -12,6 +12,7 @@ def get_novel(url):
     try:
         response = requests.get(url,headers=headers)
         if response and response.status_code == 200 :
+            print("Response retrieved successfully")
             soup = BeautifulSoup(response.text,"html.parser")
             chapter_txt = soup.find_all("div",class_ = "chr-c")
             chapter_txt = [p.text for p in chapter_txt]
@@ -19,22 +20,27 @@ def get_novel(url):
             global next_page
             next_page = soup.find("a", id ="next_chap")['href']
             return chapter_text
+        print("Response Not retrieved")
         return f"Can not retrieve the URL : Response Status Code - {response.status_code}"
     except:
-          return "Invalid URL"
+        print("Invalid URL")
+        return "Invalid URL"
 
 
 def generate_audio(text,lang):
     if text == "Invalid URL" or f"Can not retrieve the URL : Response Status Code" in text:
-         return 
+        print("audio didn't generate because not right text")
+        return
     tts = gTTS(text=text,lang=lang,slow=False)
     audio_path = "output.mp3"
     tts.save(audio_path)
+    print("Audio generated successfully using TTS")
     return audio_path
 def change_format(audio_path):
     mp3_audio = AudioSegment.from_file(audio_path, format="mp3")
     wav_audio_path = "output.wav"
     mp3_audio.export(wav_audio_path, format="wav")
+    print("Audio successfully changed")
     return wav_audio_path
 st.title("Sonus Flow")
 chap_url = st.text_input("Enter your chapter URL:")
