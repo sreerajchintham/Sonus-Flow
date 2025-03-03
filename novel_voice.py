@@ -12,6 +12,7 @@ def get_novel(url):
     try:
         response = requests.get(url,headers=headers)
         if response and response.status_code == 200 :
+            print("Response retrieved successfully")
             soup = BeautifulSoup(response.text,"html.parser")
             chapter_txt = soup.find_all("div",class_ = "chr-c")
             chapter_txt = [p.text for p in chapter_txt]
@@ -19,66 +20,61 @@ def get_novel(url):
             global next_page
             next_page = soup.find("a", id ="next_chap")['href']
             return chapter_text
+        print(f"Response Not retrieved {response.status_code}")
         return f"Can not retrieve the URL : Response Status Code - {response.status_code}"
     except:
-          return "Invalid URL"
+        print("Invalid URL")
+        return "Invalid URL"
 
 
 def generate_audio(text,lang):
     if text == "Invalid URL" or f"Can not retrieve the URL : Response Status Code" in text:
-         return 
+        print("audio didn't generate because not right text")
+        return
     tts = gTTS(text=text,lang=lang,slow=False)
     audio_path = "output.mp3"
     tts.save(audio_path)
+    print("Audio generated successfully using TTS")
     return audio_path
 def change_format(audio_path):
     mp3_audio = AudioSegment.from_file(audio_path, format="mp3")
     wav_audio_path = "output.wav"
     mp3_audio.export(wav_audio_path, format="wav")
+    print("Audio successfully changed")
     return wav_audio_path
-def connect(url):
-    if url :
-        text = get_novel(url)
-        audio_path = generate_audio(text,lang=language)
-        wav_audio_path = change_format(audio_path)
-        with open(wav_audio_path, "rb") as f:
-            audio_bytes = f.read()
-            st.audio(audio_bytes, format="audio/wav")
-        with open(audio_path, "rb") as audio_file:
-                    st.download_button(label="Download Audio", data=audio_file, file_name="output.wav", mime="audio/mp3")
-        st.write("Audio Generated Successfully!!!")
-    else:
-        st.error("Enter a Valid URL")
 
+     
 st.title("Sonus Flow")
+if "loading" not in st.session_state:
+    st.session_state.loading = False
 chap_url = st.text_input("Enter your chapter URL:")
 language = st.selectbox("Select the Language ", ["en", "es", "fr", "de"])
 start_time = time.time()
-if st.button("Generate Audio file"):
+if st.button("Generate Audio file",):
+    st.session_state.loading = True
     try:
-        connect(chap_url)
-        # if chap_url:
-        #     text = get_novel(chap_url)
-        #     print(next_page)
-        #     audio_path = generate_audio(text,lang=language)
-        #     wav_audio_path = change_format(audio_path)
-        #     with open(wav_audio_path, "rb") as f:
-        #         audio_bytes = f.read()
-        #         st.audio(audio_bytes, format="audio/wav")
-        #     with open(audio_path, "rb") as audio_file:
-        #                 st.download_button(label="Download Audio", data=audio_file, file_name="output.wav", mime="audio/mp3")
+        if chap_url:
+            with st.spinner("Loading..."):
+                text = get_novel(chap_url)
+                print(next_page)
+                audio_path = generate_audio(text,lang=language)
+                wav_audio_path = change_format(audio_path)
+
+            with open(wav_audio_path, "rb") as f:
+                audio_bytes = f.read()
+                st.audio(audio_bytes, format="audio/wav")
+            with open(audio_path, "rb") as audio_file:
+                        st.download_button(label="Download Audio", data=audio_file, file_name="output.wav", mime="audio/mp3")
     
-        #     st.write("Audio Generated Successfully!!!")
+            st.success("Audio Generated Successfully!!!")
         
-       
+            if next_page:
+                st.link_button("Next Chapter", next_page)
+        else:
+            st.error("Enter a Valid URL")
     except:
         st.write("Audio could not be generated")
-
+    st.session_state.loading = False
 stop_time = time.time()
 
-if st.button("Next Chapter"):
-    if next_page :
-        chap_url = next_page
-        connect(chap_url)
-        
 st.write(f"Total Time Taken - {int((stop_time-start_time)//60)} minutes and {int((stop_time-start_time)%60)} seconds")
