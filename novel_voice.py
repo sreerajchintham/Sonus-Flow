@@ -174,8 +174,10 @@ if st.button("Generate Audio file"):
             st.error("Enter a Valid URL")
 
     except Exception as e:
-        resp = f"The Audio Could not be Generated {e}"
-        st.error(resp)
+
+        print(f"Exception -{e}")
+
+        st.error("The Audio Could not be Generated")
 
     st.session_state.loading = False
 
