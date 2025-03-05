@@ -21,13 +21,27 @@ def get_novel(url): # Function used to scrape the chapter text
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
 }
     
+    
     try:
 
-        # Web Scraping using Requests Package 
+        for i in range(5) :
 
-        response = requests.get(url,headers=headers) 
+            delay = 1*i
 
-        # Checking whether the Response is Valid
+            time.sleep(delay)
+            # Web Scraping using Requests Package 
+
+            response = requests.get(url,headers=headers) 
+
+            if response.status_code == 200:
+
+                break
+
+            else:
+
+                continue
+
+            # Checking whether the Response is Valid
 
         if response and response.status_code == 200 : 
 
@@ -174,8 +188,10 @@ if st.button("Generate Audio file"):
             st.error("Enter a Valid URL")
 
     except Exception as e:
-        resp = f"The Audio Could not be Generated {e}"
-        st.error(resp)
+
+        print(f"Exception -{e}")
+
+        st.error("The Audio Could not be Generated")
 
     st.session_state.loading = False
 
